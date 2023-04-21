@@ -1,0 +1,28 @@
+{
+  "name": "class-repo-mongo",
+  "version": "2.0.0",
+  "description": "Reusable repository of basic classes for mongo databases.",
+  "author": "Vincent Gillot",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "develop": "ts-node-dev --transpile-only --respawn --quiet --clear ./src/index.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^5.1.0",
+    "mongoose": "^7.0.3",
+    "nodemailer": "^6.9.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "5.0.0",
+    "@types/jsonwebtoken": "^8.5.5",
+    "@types/node": "^18.11.9",
+    "prettier": "^2.4.1",
+    "ts-node": "^10.2.1",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^5.0.2"
+  }
+}
