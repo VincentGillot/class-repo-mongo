@@ -21,3 +21,9 @@ This is the class meant to be used in the presentation layer, along with the ins
 
 All files related to the database access (in this case mongodb) are found in the `/src/repository` folder.
 Here you can find the main MongoDB class to start the connection, the generic types, main extensible classes for mongoose and the folders for each collection containing the required files and data like types, schema, model, etc.
+
+## Collections
+
+### User
+
+### Session
