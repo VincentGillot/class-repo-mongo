@@ -1,17 +1,19 @@
-import { Mongoose } from "mongoose";
+import mongoose from "mongoose";
 
+/**
+ * TODO
+ */
 export class MongoDB {
-  mongoose: Mongoose;
-  connectionString: string;
+  mongoose = mongoose;
+  private connectionString: string;
 
-  constructor(mongoose: Mongoose, connectionString: string) {
-    this.mongoose = mongoose;
+  constructor(connectionString: string) {
     this.connectionString = connectionString;
   }
 
   init(): Promise<void> {
     console.log("MongoDB: initializing mongo connection...");
-    const { mongoose, connectionString } = this;
+    const { connectionString } = this;
 
     return new Promise((resolve, reject) => {
       const db = mongoose.connection;
