@@ -31,7 +31,7 @@
     "build:esm": "tsc -p ./tsconfig.esm.json && mv lib/esm/index.js lib/esm/index.mjs",
     "build:cjs": "tsc -p ./tsconfig.cjs.json",
     "prepack": "npm run build",
-    "publish": "npm publish --access=public"
+    "publish:patch": "npm version patch && npm publish --access=public"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
