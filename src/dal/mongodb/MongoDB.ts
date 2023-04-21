@@ -4,9 +4,9 @@ export class MongoDB {
   db: Record<string, unknown>;
   connectionString: string;
 
-  constructor() {
+  constructor(connectionString: string) {
     this.db = {};
-    this.connectionString = `mongodb://`;
+    this.connectionString = connectionString;
   }
 
   init(): Promise<any> {

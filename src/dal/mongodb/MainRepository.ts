@@ -1,4 +1,4 @@
-import { DeleteResult } from "mongodb";
+import { DeleteResult, UpdateResult } from "mongodb";
 import { FilterQuery, UpdateQuery } from "mongoose";
 import {
   CountArgument,
@@ -87,7 +87,7 @@ export abstract class MainRepository<T, U> {
   }: {
     query: FilterQuery<U>;
     item: UpdateQuery<T>;
-  }) {
+  }): Promise<UpdateResult> {
     return await this._model.updateMany(query, item).exec();
   }
 }

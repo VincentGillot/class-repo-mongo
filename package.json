@@ -1,13 +1,36 @@
 {
   "name": "class-repo-mongo",
-  "version": "2.0.0",
+  "types": "./lib/cjs/types/index.d.ts",
+  "main": "./lib/cjs/index.js",
+  "version": "1.0.0",
   "description": "Reusable repository of basic classes for mongo databases.",
   "author": "Vincent Gillot",
-  "private": true,
+  "private": false,
+  "repository": {
+    "url": "https://github.com/VincentGillot/class-repo-mongo"
+  },
   "license": "MIT",
+  "files": [
+    "lib/**/*"
+  ],
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/esm/types/index.d.ts",
+        "default": "./lib/esm/index.mjs"
+      },
+      "require": {
+        "types": "./lib/cjs/types/index.d.ts",
+        "default": "./lib/cjs/index.js"
+      }
+    }
+  },
   "scripts": {
-    "develop": "ts-node-dev --transpile-only --respawn --quiet --clear ./src/index.ts",
-    "build": "tsc"
+    "clean": "",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc -p ./tsconfig.esm.json && mv lib/esm/index.js lib/esm/index.mjs",
+    "build:cjs": "tsc -p ./tsconfig.cjs.json",
+    "prepack": "npm run build"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -19,6 +42,7 @@
   "devDependencies": {
     "@types/bcrypt": "5.0.0",
     "@types/jsonwebtoken": "^8.5.5",
+    "@types/nodemailer": "6.4.7",
     "@types/node": "^18.11.9",
     "prettier": "^2.4.1",
     "ts-node": "^10.2.1",
