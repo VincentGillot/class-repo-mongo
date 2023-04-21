@@ -1,19 +1,20 @@
-import * as mongoose from "mongoose";
+import { Mongoose } from "mongoose";
 
 export class MongoDB {
-  db: Record<string, unknown>;
+  mongoose: Mongoose;
   connectionString: string;
 
-  constructor(connectionString: string) {
-    this.db = {};
+  constructor(mongoose: Mongoose, connectionString: string) {
+    this.mongoose = mongoose;
     this.connectionString = connectionString;
   }
 
-  init(): Promise<any> {
-    const db = mongoose.connection;
-    const { connectionString } = this;
+  init(): Promise<void> {
+    console.log("MongoDB: initializing mongo connection...");
+    const { mongoose, connectionString } = this;
 
-    return new Promise((resolve: any, reject) => {
+    return new Promise((resolve, reject) => {
+      const db = mongoose.connection;
       mongoose.connect(connectionString);
       db.on("error", (err: any) => {
         console.error(`MongoDB: connection error on ${connectionString}`, err);

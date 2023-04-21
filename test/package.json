@@ -1,0 +1,20 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "develop": "ts-node-dev --transpile-only --respawn --quiet --clear ./index.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "class-repo-mongo": "file:..",
+    "mongodb": "^5.3.0",
+    "mongoose": "^7.0.4"
+  },
+  "devDependencies": {
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.0.4"
+  }
+}
