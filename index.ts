@@ -1,4 +1,4 @@
-export { MongoDB } from "./src/dal/mongodb/mongodb";
+export { MongoDB } from "./src/dal/mongodb/MongoDB";
 
 export { BLL } from "./src/bll/BLL";
 
