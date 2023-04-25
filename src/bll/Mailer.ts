@@ -1,7 +1,7 @@
 import * as nodemailer from "nodemailer";
 
 export class Mailer {
-  private transport;
+  private transport: nodemailer.Transporter;
   private sender;
 
   constructor() {
@@ -10,7 +10,7 @@ export class Mailer {
       port: Number(process.env.MAILER_PORT) || 0,
       auth: { user: process.env.MAILER_USER, pass: process.env.MAILER_PASS },
     });
-    this.sender = '"Some Name" <noreply@email.es>"';
+    this.sender = process.env.MAILER_SENDER;
   }
 
   public async sendMail({
