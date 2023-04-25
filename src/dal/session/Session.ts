@@ -28,7 +28,7 @@ export class Session extends GenericDocumentClass<ISessionSchema> {
       return null;
     }
 
-    return BLL.jwt.encodeCookieToken({
+    return new BLL().jwt.encodeCookieToken({
       userId: this.userId,
       remoteAddress: this.remoteAddress || "",
       ip: this.ip,
