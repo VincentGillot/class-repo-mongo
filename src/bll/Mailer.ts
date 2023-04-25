@@ -1,18 +1,16 @@
-import * as nodemailer from 'nodemailer';
+import * as nodemailer from "nodemailer";
 
 export class Mailer {
-  private transport;
+  private transport: nodemailer.Transporter;
   private sender;
-  private builder: CallableFunction | null;
 
-  constructor(builder = null) {
+  constructor() {
     this.transport = nodemailer.createTransport({
       host: process.env.MAILER_HOST,
       port: Number(process.env.MAILER_PORT) || 0,
       auth: { user: process.env.MAILER_USER, pass: process.env.MAILER_PASS },
     });
-    this.sender = '"Some Name" <noreply@email.es>"';
-    this.builder = builder;
+    this.sender = process.env.MAILER_SENDER;
   }
 
   public async sendMail({
@@ -24,12 +22,11 @@ export class Mailer {
     subject: string;
     html: any;
   }) {
-    const htmlEmail = this.builder ? this.builder(html) : html;
     this.transport.sendMail({
       from: this.sender,
       to: email,
       subject,
-      htmlEmail,
+      html,
     });
   }
 
@@ -42,7 +39,7 @@ export class Mailer {
   }) {
     await this.sendMail({
       email: email,
-      subject: 'Reset password',
+      subject: "Reset password",
       html: `
       <div>
         <div>Use this token and email to validate the user on the API. You can use a link to your endpoint or resolver.</div>
@@ -63,7 +60,7 @@ export class Mailer {
   }) {
     await this.sendMail({
       email: email,
-      subject: 'Validate your account',
+      subject: "Validate your account",
       html: `
       <div>
         <div>Use this token and email to validate the user on the API. You can use a link to your endpoint or resolver.</div>
@@ -77,7 +74,7 @@ export class Mailer {
   public async send2FACode({ email, code }: { email: string; code: number }) {
     await this.sendMail({
       email: email,
-      subject: 'Two Factor Authentication Code',
+      subject: "Two Factor Authentication Code",
       html: `
       <div>
         <div>This code must come back to the API along with the generated token.</div>

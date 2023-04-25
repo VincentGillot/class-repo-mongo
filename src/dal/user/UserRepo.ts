@@ -57,11 +57,13 @@ export class UserRepo extends MainRepository<IUser, IUserSchema> {
   public async register({
     email,
     plainPassword,
+    emailValidation,
   }: {
     email: User["email"];
     plainPassword: User["password"];
+    emailValidation?: boolean;
   }) {
-    const validPass = BLL.password.isValidPassword(plainPassword);
+    const validPass = new BLL().password.isValidPassword(plainPassword);
     if (process.env.NODE_ENV === "production" && !validPass) {
       throw new Error("invalid_password");
     }
@@ -70,18 +72,23 @@ export class UserRepo extends MainRepository<IUser, IUserSchema> {
       email,
       password: plainPassword,
       active: true,
-      validated: false,
+      validated: emailValidation ? false : true,
     });
 
-    if (user) {
+    if (emailValidation && user) {
       user.triggerValidateEmail();
     }
 
     return user;
   }
 
+  /**
+   * With Unhashed Password
+   */
   public async create(userData: IUser) {
-    userData.password = await BLL.password.hashPlainPassword(userData.password);
+    userData.password = await new BLL().password.hashPlainPassword(
+      userData.password
+    );
     const document = await this.createDocument(userData);
     return new User(document);
   }
@@ -114,7 +121,7 @@ export class UserRepo extends MainRepository<IUser, IUserSchema> {
       throw new Error("unauthorized");
     }
 
-    const validPass = await BLL.password.isSamePassword(
+    const validPass = await new BLL().password.isSamePassword(
       password,
       user.password
     );
@@ -163,7 +170,7 @@ export class UserRepo extends MainRepository<IUser, IUserSchema> {
       userAgent: string | null;
     };
   }): Promise<AuthenticationResult> {
-    const user = await BLL.user.get({
+    const user = await new BLL().user.get({
       query: {
         validationToken: token2FA,
       },

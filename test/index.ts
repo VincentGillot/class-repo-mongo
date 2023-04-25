@@ -1,5 +1,5 @@
 import { MongoDB } from "class-repo-mongo";
-import { ExtendedBLL } from "./bllExtention/ExtendedBLL";
+import { CustomBLL } from "./bllExtention/ExtendedBLL";
 
 (async () => {
   const mongodb = new MongoDB(
@@ -11,7 +11,9 @@ import { ExtendedBLL } from "./bllExtention/ExtendedBLL";
 
     console.log("Mongo connected");
 
-    ExtendedBLL.test.getAll({ query: {} });
+    const user = await CustomBLL.user.getAll({
+      query: {},
+    });
 
     // Run your http server
   } catch (e) {

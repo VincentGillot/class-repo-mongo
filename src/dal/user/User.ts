@@ -31,7 +31,7 @@ export class User extends GenericDocumentClass<IUserSchema> {
     ip,
     userAgent,
   }: Partial<ISession>) {
-    const session = await BLL.user.session.get({
+    const session = await new BLL().user.session.get({
       query: {
         userId: this._id,
         remoteAddress,
@@ -44,7 +44,7 @@ export class User extends GenericDocumentClass<IUserSchema> {
       return session;
     }
 
-    return await BLL.user.session.create({
+    return await new BLL().user.session.create({
       userId: this._id,
       remoteAddress,
       ip,
@@ -54,7 +54,7 @@ export class User extends GenericDocumentClass<IUserSchema> {
 
   public async trigger2FAValidation(code: number) {
     const token2FA = await this.assign2FAToken(code);
-    BLL.mailer.send2FACode({
+    new BLL().mailer.send2FACode({
       code: code,
       email: this.email,
     });
@@ -62,7 +62,7 @@ export class User extends GenericDocumentClass<IUserSchema> {
   }
 
   public async assign2FAToken(code: number) {
-    const TwoFAToken = BLL.jwt.encode2FAToken(code);
+    const TwoFAToken = new BLL().jwt.encode2FAToken(code);
     await this.update({
       $set: {
         validationToken: TwoFAToken,
@@ -75,12 +75,12 @@ export class User extends GenericDocumentClass<IUserSchema> {
     if (this.validationToken !== token2FA) {
       throw new Error("invalid_token");
     }
-    const { code } = BLL.jwt.verify2FAToken(token2FA);
+    const { code } = new BLL().jwt.verify2FAToken(token2FA);
     return code;
   }
 
   public async assignValidationToken() {
-    const validationToken = BLL.jwt.encodeValidationToken(this.email);
+    const validationToken = new BLL().jwt.encodeValidationToken(this.email);
     await this.update({
       $set: {
         validationToken: validationToken,
@@ -93,8 +93,9 @@ export class User extends GenericDocumentClass<IUserSchema> {
     if (this.validationToken !== validationToken) {
       throw new Error("invalid_token");
     }
-    const { email: tokenEmail } =
-      BLL.jwt.verifyValidationToken(validationToken);
+    const { email: tokenEmail } = new BLL().jwt.verifyValidationToken(
+      validationToken
+    );
     if (this.email !== tokenEmail) {
       throw new Error("invalid_token");
     }
@@ -114,15 +115,16 @@ export class User extends GenericDocumentClass<IUserSchema> {
 
   public async triggerValidateEmail() {
     const validationToken = await this.assignValidationToken();
-    await BLL.mailer.emailValidation({
+    await new BLL().mailer.emailValidation({
       email: this.email,
       token: validationToken,
     });
+    return validationToken;
   }
 
-  public async triggerForgotPassword() {
+  public async triggerForgotPasswordEmail() {
     const validationToken = await this.assignValidationToken();
-    await BLL.mailer.forgotPassword({
+    await new BLL().mailer.forgotPassword({
       email: this.email,
       token: validationToken,
     });
@@ -152,12 +154,12 @@ export class User extends GenericDocumentClass<IUserSchema> {
       });
     }
     if ("oldPlainPassword" in options) {
-      const isCorrectOldPassword = await BLL.password.isSamePassword(
+      const isCorrectOldPassword = await new BLL().password.isSamePassword(
         options.oldPlainPassword,
         this.password
       );
 
-      const isReplacingSamePassword = await BLL.password.isSamePassword(
+      const isReplacingSamePassword = await new BLL().password.isSamePassword(
         options.newPlainPassword,
         this.password
       );
@@ -166,7 +168,7 @@ export class User extends GenericDocumentClass<IUserSchema> {
         throw new Error("invalid_input");
       }
     }
-    const password = await BLL.password.hashPlainPassword(
+    const password = await new BLL().password.hashPlainPassword(
       options.newPlainPassword
     );
     await this.update({
@@ -185,7 +187,7 @@ export class User extends GenericDocumentClass<IUserSchema> {
   }
 
   public async getSessions() {
-    return await BLL.user.session.getAll({
+    return await new BLL().user.session.getAll({
       query: {
         userId: this._id,
       },
@@ -193,7 +195,7 @@ export class User extends GenericDocumentClass<IUserSchema> {
   }
 
   public async deleteAllSessions() {
-    return await BLL.user.session.deleteManyModels({
+    return await new BLL().user.session.deleteManyModels({
       query: {
         userId: this._id,
       },
