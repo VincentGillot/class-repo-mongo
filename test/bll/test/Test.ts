@@ -1,4 +1,4 @@
-import { ITestSchema } from "./type";
+import { ITestSchema } from "../../dalExtension/test/type";
 import { GenericDocumentClass } from "class-repo-mongo";
 
 export class Test extends GenericDocumentClass<ITestSchema> {

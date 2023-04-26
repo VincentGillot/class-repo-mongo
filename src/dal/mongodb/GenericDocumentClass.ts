@@ -1,5 +1,7 @@
-import { QueryOptions, UpdateQuery } from "mongoose";
+import mongoose, { QueryOptions, UpdateQuery } from "mongoose";
 import { GenericDocumentType } from "./interfaces/Generics";
+import { BLL } from "../../bll/BLL";
+import { DAL } from "../DAL";
 
 /**
  * Main static functions for the mongo DB.
@@ -8,10 +10,11 @@ import { GenericDocumentType } from "./interfaces/Generics";
  * @template U Schema object type
  *
  */
-export class GenericDocumentClass<U> {
+export class GenericDocumentClass<U> extends BLL {
   protected document: GenericDocumentType<U>;
 
-  constructor(document: GenericDocumentType<U>) {
+  constructor(document: GenericDocumentType<U>, conn: mongoose.Connection) {
+    super(conn);
     this.document = document;
   }
 

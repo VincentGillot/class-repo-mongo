@@ -1,14 +1,14 @@
-import { FilterQuery } from "mongoose";
-import { ITest, ITestSchema } from "./type";
-import { TestModel } from "./model";
-import { Test } from "./Test";
+import mongoose, { FilterQuery } from "mongoose";
+import { ITest, ITestSchema, TestModelType } from "./type";
+import { Test } from "../../bll/test/Test";
 import { MainRepository } from "class-repo-mongo";
 
 export class TestRepo extends MainRepository<ITest, ITestSchema> {
-  public session = new TestRepo();
+  private conn: mongoose.Connection;
 
-  constructor() {
-    super(TestModel);
+  constructor(model: TestModelType, conn: mongoose.Connection) {
+    super(model);
+    this.conn = conn;
   }
 
   /**
@@ -21,7 +21,7 @@ export class TestRepo extends MainRepository<ITest, ITestSchema> {
     if (!document) {
       return null;
     }
-    return new Test(document);
+    return new Test(document, this.conn);
   }
 
   public async getAll({
@@ -35,11 +35,11 @@ export class TestRepo extends MainRepository<ITest, ITestSchema> {
       query,
       sort,
     });
-    return [...documents.map((user) => new Test(user))];
+    return [...documents.map((document) => new Test(document, this.conn))];
   }
 
   public async create(docData: ITest) {
     const document = await this.createDocument(docData);
-    return new Test(document);
+    return new Test(document, this.conn);
   }
 }

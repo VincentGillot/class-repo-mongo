@@ -1,19 +1,28 @@
-import { MongoDB } from "class-repo-mongo";
-import { CustomBLL } from "./bllExtention/ExtendedBLL";
+import { API } from "class-repo-mongo";
+import mongoose from "mongoose";
+import { ExtendedBLL } from "./bll/ExtendedBLL";
 
 (async () => {
-  const mongodb = new MongoDB(
-    `mongodb://client:client@localhost:27017,localhost:27018,localhost:27019/main?replicaSet=rs0&readPreference=primary&ssl=false&authSource=admin`
+  const conn = mongoose.createConnection(
+    `mongodb://client:client@localhost:27000/main?&ssl=false&authSource=admin`
   );
+  const api = new API<ExtendedBLL>(conn, {
+    BLL: ExtendedBLL,
+  });
+  // const api = new API(conn);
 
   try {
-    await mongodb.init();
+    await api.init();
 
-    console.log("Mongo connected");
+    const bll = api.bll;
 
-    const user = await CustomBLL.user.getAll({
+    const users = await bll.user.getAll({
       query: {},
     });
+    console.log("users: ", users);
+
+    const test = bll.test.getAll({ query: {} });
+    console.log("test: ", test);
 
     // Run your http server
   } catch (e) {

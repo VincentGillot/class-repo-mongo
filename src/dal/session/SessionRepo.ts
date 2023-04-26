@@ -1,13 +1,19 @@
-import { FilterQuery } from "mongoose";
+import mongoose, { FilterQuery } from "mongoose";
 import { FindManyArgument } from "../mongodb/interfaces/MainRepositoryTypes";
 import { MainRepository } from "../mongodb/MainRepository";
-import { SessionModel } from "./model";
-import { Session } from "./Session";
-import { ISession, ISessionSchema } from "./type";
+import { Session } from "../../bll/session/Session";
+import { ISession, ISessionSchema, SessionModelType } from "./type";
 
+/**
+ * Executes Mongo DB operations
+ * Works with document classes
+ */
 export class SessionRepo extends MainRepository<ISession, ISessionSchema> {
-  constructor() {
-    super(SessionModel);
+  private conn: mongoose.Connection;
+
+  constructor(model: SessionModelType, conn: mongoose.Connection) {
+    super(model);
+    this.conn = conn;
   }
 
   public async get({
@@ -19,7 +25,7 @@ export class SessionRepo extends MainRepository<ISession, ISessionSchema> {
     if (!model) {
       return null;
     }
-    return new Session(model);
+    return new Session(model, this.conn);
   }
 
   public async getAll({
@@ -35,7 +41,7 @@ export class SessionRepo extends MainRepository<ISession, ISessionSchema> {
       size,
     });
 
-    return [...models.map(model => new Session(model))];
+    return [...models.map((model) => new Session(model, this.conn))];
   }
 
   public async create(session: Omit<ISession, "active">) {
@@ -43,6 +49,6 @@ export class SessionRepo extends MainRepository<ISession, ISessionSchema> {
       ...session,
       active: true,
     });
-    return new Session(createdSession);
+    return new Session(createdSession, this.conn);
   }
 }

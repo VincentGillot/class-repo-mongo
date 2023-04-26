@@ -1,29 +1,26 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 /**
  * TODO
  */
 export class MongoDB {
-  mongoose = mongoose;
-  private connectionString: string;
+  conn: mongoose.Connection;
 
-  constructor(connectionString: string) {
-    this.connectionString = connectionString;
+  constructor(conn: mongoose.Connection) {
+    this.conn = conn;
   }
 
   init(): Promise<void> {
     console.log("MongoDB: initializing mongo connection...");
-    const { connectionString } = this;
+    const { conn } = this;
 
     return new Promise((resolve, reject) => {
-      const db = mongoose.connection;
-      mongoose.connect(connectionString);
-      db.on("error", (err: any) => {
-        console.error(`MongoDB: connection error on ${connectionString}`, err);
+      conn.on("error", (err: any) => {
+        console.error(`MongoDB: connection error on ${conn.host}`, err);
         reject();
       });
-      db.once("open", () => {
-        console.log(`MongoDB: connected at ${connectionString}`);
+      conn.once("open", () => {
+        console.log(`MongoDB: connected at ${conn.host}`);
         resolve();
       });
     });
