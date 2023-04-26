@@ -97,7 +97,6 @@ export class UserRepo extends MainRepository<IUser, IUserSchema> {
     email,
     password,
     sessionData,
-    masteradmin = false,
   }: {
     email: string;
     password: string;
@@ -106,14 +105,12 @@ export class UserRepo extends MainRepository<IUser, IUserSchema> {
       ip: string;
       userAgent: string | null;
     };
-    masteradmin?: boolean;
   }): Promise<AuthenticationResult> {
     const user = await this.get({
       query: {
         email,
         active: true,
         validated: true,
-        masteradmin: masteradmin,
       },
     });
 
