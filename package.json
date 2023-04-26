@@ -2,7 +2,7 @@
   "name": "class-repo-mongo",
   "types": "./lib/cjs/types/index.d.ts",
   "main": "./lib/cjs/index.js",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Reusable repository of basic classes for mongo databases.",
   "author": "Vincent Gillot",
   "private": false,
