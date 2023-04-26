@@ -1,7 +1,7 @@
-import { Schema } from "mongoose";
+import { mongoose } from "class-repo-mongo";
 import { ITestSchema, TestModelType } from "./type";
 
-export const TestSchema = new Schema<ITestSchema, TestModelType>(
+export const TestSchema = new mongoose.Schema<ITestSchema, TestModelType>(
   {
     key: String,
   },
