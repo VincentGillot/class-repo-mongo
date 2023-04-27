@@ -2,6 +2,7 @@ import mongoose, { QueryOptions, UpdateQuery } from "mongoose";
 import { GenericDocumentType } from "./interfaces/Generics";
 import { BLL } from "../../bll/BLL";
 import { DAL } from "../DAL";
+import { MainBLLType } from "../../API";
 
 /**
  * Main static functions for the mongo DB.
@@ -10,12 +11,14 @@ import { DAL } from "../DAL";
  * @template U Schema object type
  *
  */
-export class GenericDocumentClass<U> extends BLL {
+export class GenericDocumentClass<U, BLLType> {
   protected document: GenericDocumentType<U>;
 
-  constructor(document: GenericDocumentType<U>, conn: mongoose.Connection) {
-    super(conn);
+  protected bll: MainBLLType<BLLType>;
+
+  constructor(document: GenericDocumentType<U>, bll: MainBLLType<BLLType>) {
     this.document = document;
+    this.bll = bll;
   }
 
   public toObject() {

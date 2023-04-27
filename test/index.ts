@@ -7,7 +7,7 @@ import { ExtendedBLL } from "./bll/ExtendedBLL";
     `mongodb://client:client@localhost:27000/main?&ssl=false&authSource=admin`
   );
   const api = new API<ExtendedBLL>(conn, {
-    BLL: ExtendedBLL,
+    customBLL: ExtendedBLL,
   });
   // const api = new API(conn);
 
@@ -16,12 +16,12 @@ import { ExtendedBLL } from "./bll/ExtendedBLL";
 
     const bll = api.bll;
 
-    const users = await bll.user.getAll({
+    const user = await bll.user.get({
       query: {},
     });
-    console.log("users: ", users);
+    console.log("users: ", user?.toObject());
 
-    const test = bll.test.getAll({ query: {} });
+    const test = await bll.test.get({ query: {} });
     console.log("test: ", test);
 
     // Run your http server

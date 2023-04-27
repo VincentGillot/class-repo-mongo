@@ -1,7 +1,7 @@
-import { ITestSchema } from "../../dalExtension/test/type";
+import { ITestSchema } from "../../dal/test/type";
 import { GenericDocumentClass } from "class-repo-mongo";
 
-export class Test extends GenericDocumentClass<ITestSchema> {
+export class Test<BLLType> extends GenericDocumentClass<ITestSchema, BLLType> {
   get _id() {
     return this.document._id.toString();
   }

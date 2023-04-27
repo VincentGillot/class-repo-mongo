@@ -1,38 +1,10 @@
 import mongoose, { Schema } from "mongoose";
-import { UserSchema } from "./user/schema";
-import { IUserSchema, UserModelType } from "./user/type";
-import { UserRepo } from "./user/UserRepo";
-import { SessionRepo } from "./session/SessionRepo";
-import { ISessionSchema, SessionModelType } from "./session/type";
-import { SessionSchema } from "./session/schema";
-import { UserBLL } from "../bll/user/UserBLL";
-import { SessionBLL } from "../bll/session/SessionBLL";
 
 export class DAL {
   private conn: mongoose.Connection;
-  protected userBLL: UserBLL;
-  protected userRepo: UserRepo;
-  protected sessionBLL: SessionBLL;
-  protected sessionRepo: SessionRepo;
 
   constructor(conn: mongoose.Connection) {
     this.conn = conn;
-
-    // User
-    const userModel = this.modelFactory<IUserSchema, UserModelType>(
-      "User",
-      UserSchema
-    );
-    this.userBLL = new UserBLL(userModel, conn);
-    this.userRepo = new UserRepo(userModel, conn);
-
-    // Session
-    const sessionModel = this.modelFactory<ISessionSchema, SessionModelType>(
-      "Session",
-      SessionSchema
-    );
-    this.sessionBLL = new SessionBLL(sessionModel, conn);
-    this.sessionRepo = new SessionRepo(sessionModel, conn);
   }
 
   /**

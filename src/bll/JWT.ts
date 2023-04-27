@@ -1,6 +1,6 @@
 import * as jwt from "jsonwebtoken";
-import { Session } from "./session/Session";
-import { User } from "./user/User";
+import { IUser } from "../dal/user/type";
+import { ISession } from "../dal/session/type";
 
 const config = {
   key: process.env.JWT_SECRET_KEY,
@@ -8,15 +8,15 @@ const config = {
 };
 
 interface ICookieToken {
-  userId: User["_id"];
-  remoteAddress: Session["remoteAddress"];
-  ip: Session["ip"];
-  userAgent: Session["userAgent"];
-  sessionId: Session["_id"];
+  userId: string;
+  remoteAddress: ISession["remoteAddress"];
+  ip: ISession["ip"];
+  userAgent: ISession["userAgent"];
+  sessionId: string;
 }
 
 interface IValidationToken {
-  email: User["email"];
+  email: IUser["email"];
 }
 
 interface I2FAToken {

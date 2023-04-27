@@ -1,14 +1,14 @@
 import mongoose, { FilterQuery } from "mongoose";
 import { ITest, ITestSchema, TestModelType } from "./type";
 import { Test } from "../../bll/test/Test";
-import { MainRepository } from "class-repo-mongo";
+import { MainBLLType, MainRepository } from "class-repo-mongo";
 
-export class TestRepo extends MainRepository<ITest, ITestSchema> {
-  private conn: mongoose.Connection;
+export class TestRepo<BLLType> extends MainRepository<ITest, ITestSchema> {
+  private bll: MainBLLType<BLLType>;
 
-  constructor(model: TestModelType, conn: mongoose.Connection) {
+  constructor(model: TestModelType, bll: MainBLLType<BLLType>) {
     super(model);
-    this.conn = conn;
+    this.bll = bll;
   }
 
   /**
@@ -21,7 +21,7 @@ export class TestRepo extends MainRepository<ITest, ITestSchema> {
     if (!document) {
       return null;
     }
-    return new Test(document, this.conn);
+    return new Test(document, this.bll);
   }
 
   public async getAll({
@@ -35,11 +35,11 @@ export class TestRepo extends MainRepository<ITest, ITestSchema> {
       query,
       sort,
     });
-    return [...documents.map((document) => new Test(document, this.conn))];
+    return [...documents.map((document) => new Test(document, this.bll))];
   }
 
   public async create(docData: ITest) {
     const document = await this.createDocument(docData);
-    return new Test(document, this.conn);
+    return new Test(document, this.bll);
   }
 }

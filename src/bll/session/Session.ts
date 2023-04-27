@@ -6,7 +6,10 @@ import { ISessionSchema } from "../../dal/session/type";
  * Executes document operations
  * Works with instances of returned documents
  */
-export class Session extends GenericDocumentClass<ISessionSchema> {
+export class Session<BLLType> extends GenericDocumentClass<
+  ISessionSchema,
+  BLLType
+> {
   get _id() {
     return this.document._id.toString();
   }

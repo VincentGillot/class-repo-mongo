@@ -3,12 +3,14 @@ import { Password } from "../Password";
 import { GenericDocumentClass } from "../../dal/mongodb/GenericDocumentClass";
 import { ISession } from "../../dal/session/type";
 import { IUserSchema } from "../../dal/user/type";
+import mongoose from "mongoose";
+import { GenericDocumentType } from "../../dal/mongodb/interfaces/Generics";
 
 /**
  * Executes document operations
  * Works with instances of returned documents
  */
-export class User extends GenericDocumentClass<IUserSchema> {
+export class User<BLLType> extends GenericDocumentClass<IUserSchema, BLLType> {
   get _id() {
     return this.document._id.toString();
   }
@@ -36,7 +38,7 @@ export class User extends GenericDocumentClass<IUserSchema> {
     ip,
     userAgent,
   }: Partial<ISession>) {
-    const session = await this.sessionRepo.get({
+    const session = await this.bll.session.get({
       query: {
         userId: this._id,
         remoteAddress,
@@ -49,7 +51,7 @@ export class User extends GenericDocumentClass<IUserSchema> {
       return session;
     }
 
-    return await this.sessionRepo.create({
+    return await this.bll.session.create({
       userId: this._id,
       remoteAddress,
       ip,
@@ -59,7 +61,7 @@ export class User extends GenericDocumentClass<IUserSchema> {
 
   public async trigger2FAValidation(code: number) {
     const token2FA = await this.assign2FAToken(code);
-    this.mailer.send2FACode({
+    this.bll.mailer.send2FACode({
       code: code,
       email: this.email,
     });
@@ -118,7 +120,7 @@ export class User extends GenericDocumentClass<IUserSchema> {
 
   public async triggerValidateEmail() {
     const validationToken = await this.assignValidationToken();
-    await this.mailer.emailValidation({
+    await this.bll.mailer.emailValidation({
       email: this.email,
       token: validationToken,
     });
@@ -127,7 +129,7 @@ export class User extends GenericDocumentClass<IUserSchema> {
 
   public async triggerForgotPasswordEmail() {
     const validationToken = await this.assignValidationToken();
-    await this.mailer.forgotPassword({
+    await this.bll.mailer.forgotPassword({
       email: this.email,
       token: validationToken,
     });
@@ -188,7 +190,7 @@ export class User extends GenericDocumentClass<IUserSchema> {
   }
 
   public async getSessions() {
-    return await this.sessionRepo.getAll({
+    return await this.bll.session.getAll({
       query: {
         userId: this._id,
       },
@@ -196,7 +198,7 @@ export class User extends GenericDocumentClass<IUserSchema> {
   }
 
   public async deleteAllSessions() {
-    return await this.sessionRepo.deleteManyModels({
+    return await this.bll.session.deleteManyModels({
       query: {
         userId: this._id,
       },

@@ -20,6 +20,8 @@ export { SessionRepo } from "./src/dal/session/SessionRepo";
 export { BLLOptions } from "./src/bll/BLL";
 export { APIOptions } from "./src/API";
 
+export { MainBLLType } from "./src/API";
+
 export { MainRepository } from "./src/dal/mongodb/MainRepository";
 export { GenericDocumentClass } from "./src/dal/mongodb/GenericDocumentClass";
 export { GenericDocumentType } from "./src/dal/mongodb/interfaces/Generics";

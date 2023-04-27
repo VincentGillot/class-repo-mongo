@@ -1,12 +1,11 @@
 import { Password } from "../Password";
-import { User } from "./User";
 import { UserRepo } from "../../dal/user/UserRepo";
-import { Session } from "../session/Session";
+import { IUser } from "../../dal/user/type";
 
 export interface AuthData {
   accessToken?: string | null;
-  userId?: User["_id"] | null;
-  sessionId?: Session["_id"] | null;
+  userId?: string | null;
+  sessionId?: string | null;
 }
 
 export type AuthenticationResult =
@@ -20,14 +19,14 @@ export type AuthenticationResult =
  * Executes Custom operations for MongoDB
  * Works with models and DB
  */
-export class UserBLL extends UserRepo {
+export class UserBLL<BLLType> extends UserRepo<BLLType> {
   public async register({
     email,
     plainPassword,
     emailValidation,
   }: {
-    email: User["email"];
-    plainPassword: User["password"];
+    email: IUser["email"];
+    plainPassword: IUser["password"];
     emailValidation?: boolean;
   }) {
     const validPass = Password.isValidPassword(plainPassword);

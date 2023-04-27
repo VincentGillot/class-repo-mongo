@@ -1,18 +1,19 @@
-import mongoose, { FilterQuery } from "mongoose";
+import { FilterQuery } from "mongoose";
 import { IUser, IUserSchema, UserModelType } from "./type";
 import { MainRepository } from "../mongodb/MainRepository";
 import { User } from "../../bll/user/User";
+import { MainBLLType } from "../../API";
 
 /**
  * Executes Mongo DB operations
  * Works with document classes
  */
-export class UserRepo extends MainRepository<IUser, IUserSchema> {
-  private conn: mongoose.Connection;
+export class UserRepo<BLLType> extends MainRepository<IUser, IUserSchema> {
+  private bll: MainBLLType<BLLType>;
 
-  constructor(model: UserModelType, conn: mongoose.Connection) {
+  constructor(model: UserModelType, bll: MainBLLType<BLLType>) {
     super(model);
-    this.conn = conn;
+    this.bll = bll;
   }
 
   /**
@@ -25,7 +26,7 @@ export class UserRepo extends MainRepository<IUser, IUserSchema> {
     if (!document) {
       return null;
     }
-    return new User(document, this.conn);
+    return new User(document, this.bll);
   }
 
   public async getAll({
@@ -39,7 +40,7 @@ export class UserRepo extends MainRepository<IUser, IUserSchema> {
       query,
       sort,
     });
-    return [...documents.map((document) => new User(document, this.conn))];
+    return [...documents.map((document) => new User(document, this.bll))];
   }
 
   /**
@@ -48,6 +49,6 @@ export class UserRepo extends MainRepository<IUser, IUserSchema> {
   public async create(userData: IUser) {
     // userData.password = await BLL.password.hashPlainPassword(userData.password);
     const document = await this.createDocument(userData);
-    return new User(document, this.conn);
+    return new User(document, this.bll);
   }
 }

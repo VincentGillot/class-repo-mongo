@@ -7,20 +7,25 @@ interface Constructable<T> {
 }
 
 export interface APIOptions<BLLType> {
-  BLL: Constructable<BLLType>;
+  customBLL: Constructable<BLLType>;
   BLLOptions?: BLLOptions;
 }
 
-export class API<BLLType = BLL> {
-  private mongoDB: MongoDB;
-  bll: BLLType;
+export type MainBLLType<BLLType> = BLLType & BLL;
 
-  constructor(conn: mongoose.Connection, options?: APIOptions<BLLType>) {
+export class API<BLLType> {
+  private mongoDB: MongoDB;
+  bll: MainBLLType<BLLType>;
+
+  constructor(
+    conn: mongoose.Connection,
+    options?: APIOptions<MainBLLType<BLLType>>
+  ) {
     this.mongoDB = new MongoDB(conn);
-    if (options?.BLL) {
-      this.bll = new options.BLL(conn, options?.BLLOptions);
+    if (options?.customBLL) {
+      this.bll = new options.customBLL(conn, options?.BLLOptions);
     } else {
-      this.bll = new BLL(conn, options?.BLLOptions) as BLLType;
+      this.bll = new BLL(conn, options?.BLLOptions) as MainBLLType<BLLType>;
     }
   }
 

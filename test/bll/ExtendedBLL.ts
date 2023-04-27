@@ -1,4 +1,4 @@
-import { BLL, Mailer } from "class-repo-mongo";
+import { BLL, Mailer, MainBLLType } from "class-repo-mongo";
 import { TestBLL } from "./test/TestBLL";
 import mongoose from "mongoose";
 import { ITestSchema } from "../dal/test/type";
@@ -25,8 +25,8 @@ class ExtendedMailer extends Mailer {
   }
 }
 
-export class ExtendedBLL extends BLL {
-  test: TestBLL;
+export class ExtendedBLL<BLLType = never> extends BLL {
+  test: TestBLL<BLLType>;
 
   constructor(conn: mongoose.Connection) {
     super(conn, {
@@ -37,6 +37,6 @@ export class ExtendedBLL extends BLL {
       "Test",
       TestSchema
     );
-    this.test = new TestBLL(testModel, conn);
+    this.test = new TestBLL(testModel, this as unknown as MainBLLType<BLLType>);
   }
 }
