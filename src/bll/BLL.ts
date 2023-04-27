@@ -1,29 +1,48 @@
-import { SessionRepo } from "../dal/session/SessionRepo";
-import { UserRepo } from "../dal/user/UserRepo";
-import { Password } from "./Password";
-import { JWT } from "./JWT";
 import { Mailer } from "./Mailer";
+import { DAL } from "../dal/DAL";
+import mongoose from "mongoose";
+import { UserBLL } from "./user/UserBLL";
+import { SessionBLL } from "./session/SessionBLL";
+import { UserSchema } from "../dal/user/schema";
+import { SessionSchema } from "../dal/session/schema";
+import { IUserSchema, UserModelType } from "../dal/user/type";
+import { ISessionSchema, SessionModelType } from "../dal/session/type";
+import { MainBLLType } from "../API";
 
-export interface BLLConstructor {
-  customMailer?: typeof Mailer;
-  customUserRepo?: typeof UserRepo;
-  customSessionRepo?: typeof SessionRepo;
+export interface BLLOptions {
+  mailer?: typeof Mailer;
 }
 
-export class BLL {
-  mailer = new Mailer();
-  user = new UserRepo();
-  session = new SessionRepo();
+export class BLL<BLLType = never> extends DAL {
+  mailer: Mailer;
 
-  constructor(constructors?: BLLConstructor) {
-    if (constructors) {
-      const { customMailer, customUserRepo, customSessionRepo } = constructors;
-      if (customMailer) this.mailer = new customMailer();
-      if (customUserRepo) this.user = new customUserRepo();
-      if (customSessionRepo) this.session = new customSessionRepo();
+  user: UserBLL<BLLType>;
+  session: SessionBLL<BLLType>;
+
+  constructor(conn: mongoose.Connection, options?: BLLOptions) {
+    super(conn);
+
+    if (options?.mailer) {
+      this.mailer = new options.mailer();
+    } else {
+      this.mailer = new Mailer();
     }
-  }
 
-  password = Password;
-  jwt = JWT;
+    // User
+    const userModel = this.modelFactory<IUserSchema, UserModelType>(
+      "User",
+      UserSchema
+    );
+    this.user = new UserBLL(userModel, this as unknown as MainBLLType<BLLType>);
+
+    // Session
+    const sessionModel = this.modelFactory<ISessionSchema, SessionModelType>(
+      "Session",
+      SessionSchema
+    );
+    this.session = new SessionBLL(
+      sessionModel,
+      this as unknown as MainBLLType<BLLType>
+    );
+  }
 }

@@ -1,30 +1,19 @@
 import { FilterQuery } from "mongoose";
-import { UserModel } from "./model";
-import { IUser, IUserSchema } from "./type";
+import { IUser, IUserSchema, UserModelType } from "./type";
 import { MainRepository } from "../mongodb/MainRepository";
-import { User } from "./User";
-import { SessionRepo } from "../session/SessionRepo";
-import { Session } from "../session/Session";
-import { BLL } from "../../bll/BLL";
+import { User } from "../../bll/user/User";
+import { MainBLLType } from "../../API";
 
-export interface AuthData {
-  accessToken?: string | null;
-  userId?: User["_id"] | null;
-  sessionId?: Session["_id"] | null;
-}
+/**
+ * Executes Mongo DB operations
+ * Works with document classes
+ */
+export class UserRepo<BLLType> extends MainRepository<IUser, IUserSchema> {
+  private bll: MainBLLType<BLLType>;
 
-export type AuthenticationResult =
-  | AuthData
-  | {
-      active2FA?: boolean | null;
-      token2FA?: string | null;
-    };
-
-export class UserRepo extends MainRepository<IUser, IUserSchema> {
-  public session = new SessionRepo();
-
-  constructor() {
-    super(UserModel);
+  constructor(model: UserModelType, bll: MainBLLType<BLLType>) {
+    super(model);
+    this.bll = bll;
   }
 
   /**
@@ -33,11 +22,11 @@ export class UserRepo extends MainRepository<IUser, IUserSchema> {
    * @returns __User__ Class Instance
    */
   public async get({ query }: { query: FilterQuery<IUserSchema> }) {
-    const user = await this.findOne({ query });
-    if (!user) {
+    const document = await this.findOne({ query });
+    if (!document) {
       return null;
     }
-    return new User(user);
+    return new User(document, this.bll);
   }
 
   public async getAll({
@@ -47,162 +36,19 @@ export class UserRepo extends MainRepository<IUser, IUserSchema> {
     query: FilterQuery<IUserSchema>;
     sort?: any;
   }) {
-    const users = await this.findMany({
+    const documents = await this.findMany({
       query,
       sort,
     });
-    return [...users.map((user) => new User(user))];
-  }
-
-  public async register({
-    email,
-    plainPassword,
-    emailValidation,
-  }: {
-    email: User["email"];
-    plainPassword: User["password"];
-    emailValidation?: boolean;
-  }) {
-    const validPass = new BLL().password.isValidPassword(plainPassword);
-    if (process.env.NODE_ENV === "production" && !validPass) {
-      throw new Error("invalid_password");
-    }
-
-    const user = await this.create({
-      email,
-      password: plainPassword,
-      active: true,
-      validated: emailValidation ? false : true,
-    });
-
-    if (emailValidation && user) {
-      user.triggerValidateEmail();
-    }
-
-    return user;
+    return [...documents.map((document) => new User(document, this.bll))];
   }
 
   /**
    * With Unhashed Password
    */
   public async create(userData: IUser) {
-    userData.password = await new BLL().password.hashPlainPassword(
-      userData.password
-    );
+    // userData.password = await BLL.password.hashPlainPassword(userData.password);
     const document = await this.createDocument(userData);
-    return new User(document);
-  }
-
-  public async authenticate({
-    email,
-    password,
-    sessionData,
-  }: {
-    email: string;
-    password: string;
-    sessionData: {
-      remoteAddress: string | null;
-      ip: string;
-      userAgent: string | null;
-    };
-  }): Promise<AuthenticationResult> {
-    const user = await this.get({
-      query: {
-        email,
-        active: true,
-        validated: true,
-      },
-    });
-
-    if (!user) {
-      throw new Error("unauthorized");
-    }
-
-    const validPass = await new BLL().password.isSamePassword(
-      password,
-      user.password
-    );
-    if (!validPass) {
-      throw new Error("unauthorized");
-    }
-
-    if (user.active2FA) {
-      const code = Math.floor(100000 + Math.random() * 900000);
-      const token2FA = await user.trigger2FAValidation(code);
-      return {
-        active2FA: true,
-        token2FA,
-      };
-    }
-
-    const session = await user.fetchSession(sessionData);
-
-    if (!session) {
-      throw new Error("unauthorized");
-    }
-
-    const accessToken = await session.generateAccessToken();
-
-    if (!accessToken) {
-      throw new Error("unauthorized");
-    }
-
-    return {
-      accessToken,
-      userId: user._id,
-      sessionId: session?._id,
-    };
-  }
-
-  public async authenticateWith2FA({
-    code,
-    token2FA,
-    sessionData,
-  }: {
-    code: number;
-    token2FA: string;
-    sessionData: {
-      remoteAddress: string | null;
-      ip: string;
-      userAgent: string | null;
-    };
-  }): Promise<AuthenticationResult> {
-    const user = await new BLL().user.get({
-      query: {
-        validationToken: token2FA,
-      },
-    });
-    if (!user) {
-      throw new Error("unauthorized");
-    }
-
-    const verifiedCode = await user.verify2FATokenToken(token2FA);
-    if (verifiedCode !== code) {
-      throw new Error("unauthorized");
-    }
-
-    const session = await user.fetchSession(sessionData);
-
-    if (!session) {
-      throw new Error("unauthorized");
-    }
-
-    const accessToken = await session.generateAccessToken();
-
-    if (!accessToken) {
-      throw new Error("unauthorized");
-    }
-
-    await user.update({
-      $set: {
-        validationToken: null,
-      },
-    });
-
-    return {
-      accessToken,
-      userId: user._id,
-      sessionId: session?._id,
-    };
+    return new User(document, this.bll);
   }
 }

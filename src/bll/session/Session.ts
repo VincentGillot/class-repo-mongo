@@ -1,8 +1,15 @@
-import { BLL } from "../../bll/BLL";
-import { GenericDocumentClass } from "../mongodb/GenericDocumentClass";
-import { ISessionSchema } from "./type";
+import { JWT } from "../JWT";
+import { GenericDocumentClass } from "../../dal/mongodb/GenericDocumentClass";
+import { ISessionSchema } from "../../dal/session/type";
 
-export class Session extends GenericDocumentClass<ISessionSchema> {
+/**
+ * Executes document operations
+ * Works with instances of returned documents
+ */
+export class Session<BLLType> extends GenericDocumentClass<
+  ISessionSchema,
+  BLLType
+> {
   get _id() {
     return this.document._id.toString();
   }
@@ -28,7 +35,7 @@ export class Session extends GenericDocumentClass<ISessionSchema> {
       return null;
     }
 
-    return new BLL().jwt.encodeCookieToken({
+    return JWT.encodeCookieToken({
       userId: this.userId,
       remoteAddress: this.remoteAddress || "",
       ip: this.ip,

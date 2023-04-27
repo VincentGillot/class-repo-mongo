@@ -15,11 +15,11 @@ import { GenericModelType } from "./interfaces/Generics";
  * @template U Schema object type
  *
  */
-export abstract class MainRepository<T, U> {
+export class MainRepository<T, U> {
   private _model: GenericModelType<T, U>;
 
-  constructor(schemaModel: GenericModelType<T, U>) {
-    this._model = schemaModel;
+  constructor(model: GenericModelType<T, U>) {
+    this._model = model;
   }
 
   protected async findOne({
