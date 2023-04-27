@@ -1,7 +1,7 @@
 import { FilterQuery } from "mongoose";
-import { FindManyArgument } from "../mongodb/interfaces/MainRepositoryTypes";
-import { MainRepository } from "../mongodb/MainRepository";
-import { Session } from "../../bll/session/Session";
+import { FindManyArgument } from "../../dal/mongodb/interfaces/MainRepositoryTypes";
+import { MainRepository } from "../../dal/mongodb/MainRepository";
+import { Session } from "../../collections/session/Session";
 import { ISession, ISessionSchema, SessionModelType } from "./type";
 import { MainBLLType } from "../../API";
 

@@ -1,7 +1,7 @@
 import { FilterQuery } from "mongoose";
 import { IUser, IUserSchema, UserModelType } from "./type";
-import { MainRepository } from "../mongodb/MainRepository";
-import { User } from "../../bll/user/User";
+import { MainRepository } from "../../dal/mongodb/MainRepository";
+import { User } from "../../collections/user/User";
 import { MainBLLType } from "../../API";
 
 /**

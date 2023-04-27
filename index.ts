@@ -6,15 +6,15 @@ export { BLL } from "./src/bll/BLL";
 
 export { Mailer } from "./src/bll/Mailer";
 
-export { User } from "./src/bll/user/User";
-export { Session } from "./src/bll/session/Session";
+export { User } from "./src/collections/user/User";
+export { Session } from "./src/collections/session/Session";
 
-export { UserBLL } from "./src/bll/user/UserBLL";
-export { SessionBLL } from "./src/bll/session/SessionBLL";
+export { UserBLL } from "./src/collections/user/UserBLL";
+export { SessionBLL } from "./src/collections/session/SessionBLL";
 
 // DAL
-export { UserRepo } from "./src/dal/user/UserRepo";
-export { SessionRepo } from "./src/dal/session/SessionRepo";
+export { UserRepo } from "./src/collections/user/UserRepo";
+export { SessionRepo } from "./src/collections/session/SessionRepo";
 
 // TYPES
 export { BLLOptions } from "./src/bll/BLL";

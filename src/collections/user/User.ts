@@ -1,10 +1,8 @@
-import { JWT } from "../JWT";
-import { Password } from "../Password";
+import { JWT } from "../../bll/JWT";
+import { Password } from "../../bll/Password";
 import { GenericDocumentClass } from "../../dal/mongodb/GenericDocumentClass";
-import { ISession } from "../../dal/session/type";
-import { IUserSchema } from "../../dal/user/type";
-import mongoose from "mongoose";
-import { GenericDocumentType } from "../../dal/mongodb/interfaces/Generics";
+import { ISession } from "../session/type";
+import { IUserSchema } from "./type";
 
 /**
  * Executes document operations

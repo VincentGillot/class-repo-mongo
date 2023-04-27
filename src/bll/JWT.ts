@@ -1,6 +1,6 @@
 import * as jwt from "jsonwebtoken";
-import { IUser } from "../dal/user/type";
-import { ISession } from "../dal/session/type";
+import { IUser } from "../collections/user/type";
+import { ISession } from "../collections/session/type";
 
 const config = {
   key: process.env.JWT_SECRET_KEY,

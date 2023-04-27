@@ -1,13 +1,13 @@
 import { Mailer } from "./Mailer";
 import { DAL } from "../dal/DAL";
 import mongoose from "mongoose";
-import { UserBLL } from "./user/UserBLL";
-import { SessionBLL } from "./session/SessionBLL";
-import { UserSchema } from "../dal/user/schema";
-import { SessionSchema } from "../dal/session/schema";
-import { IUserSchema, UserModelType } from "../dal/user/type";
-import { ISessionSchema, SessionModelType } from "../dal/session/type";
+import { SessionSchema } from "../collections/session/schema";
 import { MainBLLType } from "../API";
+import { UserBLL } from "../collections/user/UserBLL";
+import { UserSchema } from "../collections/user/schema";
+import { IUserSchema, UserModelType } from "../collections/user/type";
+import { ISessionSchema, SessionModelType } from "../collections/session/type";
+import { SessionBLL } from "../collections/session/SessionBLL";
 
 export interface BLLOptions {
   mailer?: typeof Mailer;

@@ -1,6 +1,6 @@
-import { JWT } from "../JWT";
+import { JWT } from "../../bll/JWT";
 import { GenericDocumentClass } from "../../dal/mongodb/GenericDocumentClass";
-import { ISessionSchema } from "../../dal/session/type";
+import { ISessionSchema } from "./type";
 
 /**
  * Executes document operations

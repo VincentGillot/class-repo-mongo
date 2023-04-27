@@ -1,6 +1,6 @@
-import { Password } from "../Password";
-import { UserRepo } from "../../dal/user/UserRepo";
-import { IUser } from "../../dal/user/type";
+import { Password } from "../../bll/Password";
+import { UserRepo } from "../../collections/user/UserRepo";
+import { IUser } from "../../collections/user/type";
 
 export interface AuthData {
   accessToken?: string | null;

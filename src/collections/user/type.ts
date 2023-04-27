@@ -2,7 +2,7 @@ import { ObjectId } from "mongoose";
 import {
   GenericDocumentType,
   GenericModelType,
-} from "../mongodb/interfaces/Generics";
+} from "../../dal/mongodb/interfaces/Generics";
 
 export interface IUser {
   email: string;
