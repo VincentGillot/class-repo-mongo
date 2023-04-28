@@ -6,7 +6,7 @@ import { ExtendedBLL } from "./bll/ExtendedBLL";
   const conn = mongoose.createConnection(
     `mongodb://client:client@localhost:27000/main?&ssl=false&authSource=admin`
   );
-  const api = new API<ExtendedBLL>(conn, {
+  const api = new API(conn, {
     customBLL: ExtendedBLL,
   });
   // const api = new API(conn);
